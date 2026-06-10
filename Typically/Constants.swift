@@ -39,13 +39,13 @@ struct NavigationCarouselConstants {
     static let frameSize: CGFloat = 45
     static let cornerRadius: CGFloat = 120
 
-    static let distanceThreshold: CGFloat = 45
+    static let distanceThreshold: CGFloat = 35
 
-    static let innerGeometryFrameHeight: CGFloat = 70
+    static let innerGeometryFrameWidth: CGFloat = 50
 
     static let itemOffset: CGFloat = 50
 
-    static let stackFramewidth: CGFloat = 45
+    static let stackFrameHeight: CGFloat = 45
 }
 
 

@@ -18,8 +18,8 @@ struct NavigationCarouselView: View {
     var body: some View {
         GeometryReader { rootGeo in
             
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: NavigationCarouselConstants.itemsSpacing) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: NavigationCarouselConstants.itemsSpacing) {
                     
                     ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                         
@@ -27,8 +27,8 @@ struct NavigationCarouselView: View {
                             
                             let frame = itemGeo.frame(in: .global)
                             
-                            let screenCenter = rootGeo.frame(in: .global).midY
-                            let itemCenter = frame.midY
+                            let screenCenter = rootGeo.frame(in: .global).midX
+                            let itemCenter = frame.midX
                             
                             let distance = abs(screenCenter - itemCenter)
                             
@@ -45,20 +45,29 @@ struct NavigationCarouselView: View {
                                     selectedIndex = index
                                 }
                             } label: {
-                                Image(systemName: item.icon)
-                                    .font(.system(size: NavigationCarouselConstants.iconSize))
-                                    .foregroundStyle(.black)
-                                    .frame(width: NavigationCarouselConstants.frameSize, height: NavigationCarouselConstants.frameSize)
-                                    .background {
-                                        ZStack {
-                                            if selectedIndex == index {
-                                                RoundedRectangle(
-                                                    cornerRadius: NavigationCarouselConstants.cornerRadius
-                                                )
-                                                .fill(.ultraThinMaterial)
-                                            }
-                                        }
-                                    }
+                                VStack(spacing: 6) {
+                                      Image(systemName: item.icon)
+                                          .font(.system(size: NavigationCarouselConstants.iconSize))
+                                          .foregroundStyle(.blue)
+                                          .frame(
+                                              width: NavigationCarouselConstants.frameSize,
+                                              height: NavigationCarouselConstants.frameSize
+                                          )
+                                          .background {
+                                              if selectedIndex == index {
+                                                  RoundedRectangle(
+                                                      cornerRadius: NavigationCarouselConstants.cornerRadius
+                                                  )
+                                                  .fill(.ultraThinMaterial)
+                                              }
+                                          }
+
+                                    Text(item.title)
+                                        .font(.caption)
+                                        .foregroundStyle(.primary)
+                                        .opacity(selectedIndex == index ? 1 : 0)
+                                        .offset(y: selectedIndex == index ? 0 : 6)
+                                  }
                             }
                             .disabled(true)
                             .scaleEffect(scale)
@@ -66,7 +75,7 @@ struct NavigationCarouselView: View {
                             .animation(.smooth, value: distance)
                             .onChange(of: distance) { _, newDistance in
                                 
-                                let threshold = NavigationCarouselConstants.distanceThreshold
+                                let threshold = NavigationCarouselConstants.distanceThreshold - 10
                                 
                                 if newDistance < threshold &&
                                     selectedIndex != index {
@@ -74,12 +83,12 @@ struct NavigationCarouselView: View {
                                 }
                             }
                         }
-                        .frame(height: NavigationCarouselConstants.innerGeometryFrameHeight)
+                        .frame(width: NavigationCarouselConstants.innerGeometryFrameWidth)
                         .id(index)
                         .scrollTargetLayout()
                     }
                 }
-                .padding(.vertical, rootGeo.size.height / 2 - NavigationCarouselConstants.itemOffset)
+                .padding(.horizontal, rootGeo.size.width / 2 - NavigationCarouselConstants.itemOffset)
                 .scrollTargetBehavior(.viewAligned)
                 .scrollPosition(id: $scrollPosition)
                 .onChange(of: scrollPosition) { _, newValue in
@@ -89,7 +98,7 @@ struct NavigationCarouselView: View {
                 }
             }
         }
-        .frame(width: NavigationCarouselConstants.stackFramewidth)
+        .frame(height: NavigationCarouselConstants.stackFrameHeight)
         .onChange(of: selectedIndex) { _, _ in
             selectionFeedback.selectionChanged()
             AudioServicesPlaySystemSound(1104)

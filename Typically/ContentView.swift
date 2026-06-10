@@ -11,7 +11,7 @@ struct ContentView: View {
     @State private var selectedIndex = 0
     
     var body: some View {
-        HStack(spacing: 0) {
+        VStack(spacing: 0) {
 
             NavigationCarouselView(
                 items: ContentViewConstants.screens,
@@ -29,12 +29,8 @@ struct ContentView: View {
 struct CurrentScreenView: View {
     let index: Int
     
-    private func getCurrentScreenText() -> String {
-        return ContentViewConstants.screens[index].title
-    }
-    
     var body: some View {
-        Text(getCurrentScreenText())
+        TimerView()
     }
 }
 
