@@ -45,22 +45,10 @@ struct NavigationCarouselView: View {
                                     selectedIndex = index
                                 }
                             } label: {
-                                VStack(spacing: 6) {
+                                HStack(spacing: 6) {
                                       Image(systemName: item.icon)
                                           .font(.system(size: NavigationCarouselConstants.iconSize))
-                                          .foregroundStyle(.blue)
-                                          .frame(
-                                              width: NavigationCarouselConstants.frameSize,
-                                              height: NavigationCarouselConstants.frameSize
-                                          )
-                                          .background {
-                                              if selectedIndex == index {
-                                                  RoundedRectangle(
-                                                      cornerRadius: NavigationCarouselConstants.cornerRadius
-                                                  )
-                                                  .fill(.ultraThinMaterial)
-                                              }
-                                          }
+                        
 
                                     Text(item.title)
                                         .font(.caption)
@@ -68,6 +56,7 @@ struct NavigationCarouselView: View {
                                         .opacity(selectedIndex == index ? 1 : 0)
                                         .offset(y: selectedIndex == index ? 0 : 6)
                                   }
+                                .frame(width: 100)
                             }
                             .disabled(true)
                             .scaleEffect(scale)
@@ -80,6 +69,18 @@ struct NavigationCarouselView: View {
                                 if newDistance < threshold &&
                                     selectedIndex != index {
                                     selectedIndex = index
+                                }
+                            }
+                            .foregroundStyle(.blue)
+                            .frame(
+                                height: NavigationCarouselConstants.frameSize
+                            )
+                            .background {
+                                if selectedIndex == index {
+                                    RoundedRectangle(
+                                        cornerRadius: NavigationCarouselConstants.cornerRadius
+                                    )
+                                    .fill(.ultraThinMaterial)
                                 }
                             }
                         }
