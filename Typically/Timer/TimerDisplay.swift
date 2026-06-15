@@ -8,36 +8,24 @@
 import SwiftUI
 
 struct TimerDisplay: View {
-
-    let startDate: Date?
+    let elapsedTime: TimeInterval
 
     var body: some View {
-
-        TimelineView(.periodic(from: .now, by: 1)) { _ in
-
-            Text(elapsedString)
-                .font(.system(size: 52, weight: .bold, design: .rounded))
-                .monospacedDigit()
-        }
+        Text(formattedTime)
+            .font(.system(size: 42, weight: .medium, design: .rounded))
+            .monospacedDigit()
     }
 
-    private var elapsedString: String {
-
-        guard let startDate else {
-            return "00:00:00"
-        }
-
-        let elapsed = Int(Date().timeIntervalSince(startDate))
+    private var formattedTime: String {
+        let elapsed = Int(elapsedTime)
 
         let hours = elapsed / 3600
         let minutes = (elapsed % 3600) / 60
-        let seconds = elapsed % 60
 
         return String(
-            format: "%02d:%02d:%02d",
+            format: "%02d:%02d",
             hours,
-            minutes,
-            seconds
+            minutes
         )
     }
 }
