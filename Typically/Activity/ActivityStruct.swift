@@ -10,11 +10,17 @@ import Foundation
 struct Activity: Identifiable, Codable, Equatable {
     let id: UUID
     let name: String
-    let estimatedTime: Int?
+    let estimatedTime: Int
+    var lastDone: Date?
 
-    init(name: String) {
+    init(name: String, estimatedTime: Int) {
         self.id = UUID()
         self.name = name
-        self.estimatedTime = nil
+        self.estimatedTime = estimatedTime
+        self.lastDone = .now
+    }
+
+    mutating func updateLastDone() {
+        lastDone = .now
     }
 }

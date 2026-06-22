@@ -18,6 +18,7 @@ struct TimerView: View {
     @State private var showingFullText = false
     @State private var hideTooltipTask: Task<Void, Never>?
     
+    
     private var elapsedTime: TimeInterval {
         guard let startDate else {
             return 0
@@ -33,18 +34,11 @@ struct TimerView: View {
             elapsedTime.truncatingRemainder(dividingBy: cycle) / cycle
         )
     }
-
+    
     var body: some View {
-
         VStack(spacing: 32) {
 
             Spacer()
-
-            if let currentActivity {
-                Text(currentActivity.name)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            }
 
             ZStack {
 
@@ -79,10 +73,18 @@ struct TimerView: View {
 
                 VStack(spacing: 8) {
 
-                    TimerDisplay(elapsedTime: elapsedTime)
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        
+                        let elapsedTime = startDate.map {
+                            context.date.timeIntervalSince($0)
+                        } ?? 0
+
+                        TimerDisplay(elapsedTime: elapsedTime)
+                    }
 
                     
                     Text(currentActivity?.name ?? "Not tracking")
+                        .frame(maxWidth: 100)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -126,6 +128,9 @@ struct TimerView: View {
 
                 if currentActivity == nil {
                     showingActivitySheet = true
+                } else {
+                    currentActivity = nil
+                    startDate =  nil
                 }
 
             } label: {
@@ -146,34 +151,25 @@ struct TimerView: View {
                             )
                     )
             }
-            .onLongPressGesture(minimumDuration: 1) {
+            .sheet(isPresented: $showingActivitySheet) {
+                ActivitySheet(
+                    recents: store.recents
+                ) { name, estimatedTime in
 
-                guard currentActivity != nil else {
-                    return
+                    let activity = Activity(
+                        name: name,
+                        estimatedTime: estimatedTime
+                    )
+
+                    store.add(activity)
+
+                    currentActivity = activity
+                    startDate = Date()
+                    
+                    showingActivitySheet = false
                 }
-
-                currentActivity = nil
-                startDate = nil
-
-                showingActivitySheet = true
+                .presentationDetents([.medium])
             }
-//            .sheet(isPresented: $showingActivitySheet) {
-//                ActivitySheet(
-//                    recents: store.recents
-//                ) { name, estimatedMinutes in
-//
-//                    let activity = Activity(
-//                        name: name,
-//                        estimatedMinutes: estimatedMinutes
-//                    )
-//
-//                    store.add(activity)
-//
-//                    currentActivity = activity
-//                    startDate = Date()
-//                }
-//                .presentationDetents([.medium])
-//            }
 
             Spacer()
         }
